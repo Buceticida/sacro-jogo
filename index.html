@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sacro</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0b0708; color: #d8c9b8; font: 16px Georgia, serif; }
+  main { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 0 20px; }
+  h1 { font-weight: normal; letter-spacing: 0.4em; color: #c21e12; margin: 0; }
+  a { color: #ffb38a; }
+  small { color: #7d6d62; max-width: 460px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<main>
+  <h1>SACRO</h1>
+  <p id="msg">Abrindo a escola…</p>
+  <small id="help"></small>
+</main>
+<script>
+// The game runs on Rafael's PC behind a Cloudflare tunnel whose address changes when it restarts; that PC keeps the
+// current one in link.json in this repository. This page reads it fresh (the GitHub API, not the cached Pages copy) and
+// goes there.
+const msg = document.getElementById('msg'), help = document.getElementById('help');
+const go = (url) => { msg.innerHTML = 'Entrando em <a href="' + url + '">' + url.replace('https://', '') + '</a>…'; location.replace(url + location.search); };
+fetch('https://api.github.com/repos/Buceticida/sacro-jogo/contents/link.json?ref=main&t=' + Date.now(), { cache: 'no-store' })
+  .then((r) => r.json()).then((j) => JSON.parse(atob(j.content.replace(/\n/g, ''))))
+  .catch(() => fetch('link.json?t=' + Date.now(), { cache: 'no-store' }).then((r) => r.json()))
+  .then((l) => go(l.url))
+  .catch(() => { msg.textContent = 'Não consegui achar o servidor agora.'; help.textContent = 'O jogo roda num PC que precisa estar ligado. Tente de novo em um minuto.'; });
+</script>
+</body>
+</html>
